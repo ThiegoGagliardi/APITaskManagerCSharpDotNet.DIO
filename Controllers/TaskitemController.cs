@@ -26,20 +26,33 @@ namespace APITaskManagerCSharpDotNet.Controllers
 
             if (!taskList.Any()){
 
-                return NoContent();
+                return NotFound();
             }
 
             return Ok(taskList);
         }
 
+       [HttpGet("{id}")]
+        public ActionResult <TaskListItem> Get( [FromRoute] int id){
+
+            var taskitem = _context.TaskList.Where(t => t.Id == id);
+
+            if (taskitem is null){
+
+                return NotFound();
+            }
+
+            return Ok(taskitem);
+        }        
+
         [HttpGet("obterporstatus/{status}")]
-        public ActionResult<List<TaskListItem>> Get([FromRoute]int status){
+        public ActionResult<List<TaskListItem>> GetByStatus([FromRoute]int status){
 
             var taskList = _context.TaskList.Where( t => t.Status == (TaskItemStatus) status).ToList();
 
             if (!taskList.Any()){
 
-                return NoContent();
+                return NotFound();
             }
 
             return Ok(taskList);
@@ -48,11 +61,11 @@ namespace APITaskManagerCSharpDotNet.Controllers
         [HttpGet("obterpordata/{data}")]
         public ActionResult<List<TaskListItem>> Get([FromRoute] DateTime data){
 
-            var taskList = _context.TaskList.Where( t => t.Data == data).ToList();
+            var taskList = _context.TaskList.Where( t => t.Data.Date == data.Date).ToList();
 
             if (!taskList.Any()){
 
-                return NoContent();
+                return NotFound();
             }
 
             return Ok(taskList);
@@ -65,7 +78,7 @@ namespace APITaskManagerCSharpDotNet.Controllers
 
             if (!taskList.Any()){
 
-                return NoContent();
+                return NotFound();
             }
 
             return Ok(taskList);
@@ -73,6 +86,13 @@ namespace APITaskManagerCSharpDotNet.Controllers
 
         [HttpPost]
         public ActionResult<TaskListItem> Post([FromBody] TaskListItem newTask){
+
+            if (newTask.Data == DateTime.MinValue){
+                
+                return BadRequest(new { msg = "A data da tarefa não pode ser vazia.",
+                                        status = HttpStatusCode.BadRequest });            
+            }
+
             try{
 
                 _context.TaskList.Add(newTask);
@@ -96,7 +116,13 @@ namespace APITaskManagerCSharpDotNet.Controllers
 
             if (taskForUpdate is null){
                 
-                return NoContent();
+                return NotFound();
+            }
+
+            if (alteredTask.Data == DateTime.MinValue){
+
+                return BadRequest(new { msg = $"A data da tarefa não pode ser vazia, {id}",
+                                        status = HttpStatusCode.BadRequest });            
             }
 
             try {
