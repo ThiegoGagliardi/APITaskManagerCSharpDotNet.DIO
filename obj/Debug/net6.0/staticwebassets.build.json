@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "rBPfNIXtHJcvCbQLFVsfkYhUIv46rRx8q9iL1PlJM84=",
+  "Source": "APITaskManagerCSharpDotNet",
+  "BasePath": "_content/APITaskManagerCSharpDotNet",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
